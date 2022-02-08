@@ -2,10 +2,8 @@ CXX := g++
 CFLAGS := -Wall
 EXE_NAME := mh
 
-all: main
-
-main: main.cpp
-	$(CXX) -o $(EXE_NAME) main.cpp
+all:
+	$(CXX) $(CFLAGS) -o $(EXE_NAME) main.cpp
 
 clean:
-	$(RM) $(EXE_NAME) 
+	$(RM) $(EXE_NAME)
