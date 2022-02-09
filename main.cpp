@@ -32,9 +32,15 @@ int main()
             ss >> (addr);
             block_addr = trunc(addr/16); //16 bytes per block
             block_number = block_addr % 64; //64 blocks per cache
+            
+            // v2 = std::vector<int>(v1.begin() + 1, v1.end());
+            std::string tag = std::bitset<32>(addr).to_string();
+            tag = tag.substr(0,22);
+            std::cout << "tag: " << tag << "\n" << addr << '\n';
 
             word_offset = (std::bitset<4>(addr).to_ulong())/4;  // gets four last bits from addres and gets word possition in a block, four words per block    
-        
+            
+
             // Gets operation, if write evaluates next input term.
             ss >> (op);
             if (op == 0){
