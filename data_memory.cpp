@@ -38,7 +38,7 @@ class data_memory
         return block;
     }
 
-    void write_word(int addr, std::bitset<32> write_data) {  // Method/function defined inside the class
+    void write_word(int addr, const std::bitset<32>& write_data) {  // Method/function defined inside the class
         _data[addr] = write_data;
 
         DEBUG_MEM(std::cout << "DEBUG_MEM\t" << "write_word "
