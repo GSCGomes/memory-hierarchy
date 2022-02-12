@@ -21,9 +21,6 @@ int main(int argc, char** argv)
     data_memory D;
     cache C;
 
-    C.init();// init memories
-    D.init();
-    
     using word_t = std::bitset<32>;
     word_t write_data;
     word_t tag_data;

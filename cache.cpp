@@ -11,24 +11,19 @@ class cache
     using word_t = std::bitset<32>;
 
     using block_t = std::array<std::bitset<32>, 4>;
-    std::array<block_t, 64> _data;
 
-    //each tag or validity bit represents a block
-    std::array<std::bitset<22>, 64> _tags;
-    std::array<bool, 64> _vbit;
-    std::array<bool, 64> _dbit;
 
-    public:
-    void init(){
-         for (int i = 0; i < 64; i++){
-                for (int j = 0; j < 4; j++){
-                    _data[i][j] = 0x0;
-                }
-                _tags[i] = 0x0;
-                _vbit[i] = 0x0;
-                _dbit[i] = 0x0;
+  public:
+    cache(){
+        for (int i = 0; i < 64; i++){
+            for (int j = 0; j < 4; j++){
+                _data[i][j] = 0x0;
             }
+            _tags[i] = 0x0;
+            _vbit[i] = 0x0;
+            _dbit[i] = 0x0;
         }
+    }
 
     public:
     std::optional<word_t> read_word(int block_number, const std::bitset<22>& tag, int word_offset) {
@@ -104,6 +99,13 @@ class cache
         printSeparator("cache end");
     }
 
+  private:
+    std::array<block_t, 64> _data;
+
+    //each tag or validity bit represents a block
+    std::array<std::bitset<22>, 64> _tags;
+    std::array<bool, 64> _vbit;
+    std::array<bool, 64> _dbit;
 
 };
 

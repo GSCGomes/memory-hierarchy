@@ -8,16 +8,14 @@
 class data_memory
 {
     using block_t = std::array<std::bitset<32>, 4>;
-    std::array<std::bitset<32>, 1024> _data;
 
-    public:
-    void init(){
-         for (int i = 0; i < 1024; i++){
-                _data[i] = 0x0;
-            }
+  public:
+    data_memory(){
+        for (int i = 0; i < 1024; i++){
+            _data[i] = 0x0;
         }
+    }
 
-    public:
     block_t read_block(int word_addr) {  // Method/function defined inside the class
 
         block_t block;
@@ -71,5 +69,7 @@ class data_memory
         printSeparator("data memory end");
     }
 
+  private:
+    std::array<std::bitset<32>, 1024> _data;
 };
 
