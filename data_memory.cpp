@@ -7,6 +7,7 @@
 
 class data_memory
 {
+    using word_t = std::bitset<32>;
     using block_t = std::array<std::bitset<32>, 4>;
 
   public:
@@ -36,7 +37,7 @@ class data_memory
         return block;
     }
 
-    void write_word(int addr, const std::bitset<32>& write_data) {  // Method/function defined inside the class
+    void write_word(int addr, const word_t& write_data) {  // Method/function defined inside the class
         _data[addr] = write_data;
 
         DEBUG_MEM(std::cout << "DEBUG_MEM\t" << "write_word "
@@ -70,6 +71,6 @@ class data_memory
     }
 
   private:
-    std::array<std::bitset<32>, 1024> _data;
+    std::array<word_t, 1024> _data;
 };
 

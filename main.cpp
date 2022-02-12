@@ -22,6 +22,7 @@ int main(int argc, char** argv)
     cache C;
 
     using word_t = std::bitset<32>;
+    using tag_t = std::bitset<22>;
     word_t write_data;
     word_t tag_data;
     std::array<word_t, 4> block_data;
@@ -59,19 +60,19 @@ int main(int argc, char** argv)
                 std::cout << "Address " << addr << " is not divisible by 4. Considering address "
                           << addr - (addr % 4) << ".\n";
             }
+
             block_addr = trunc(addr/16); //16 bytes per block
             block_number = block_addr % 64; //64 blocks per cache
-           
 
-            std::bitset<32> baddr(addr);
-            std::bitset<22> tag;
+            word_t baddr(addr);
+            tag_t tag;
             
             for (int i = 21; i >= 0; i--){ // change this for suggested hack by fish
                 tag[i] = baddr[i+10];
             }   
 
             
-            word_addr = (std::bitset<32>(addr >> 2).to_ulong());  // gets word addres
+            word_addr = (word_t(addr >> 2).to_ulong());  // gets word addres
             word_offset = word_addr % 4; // gets wrod postion in a block
 
             // Gets operation, if write evaluates next input term.

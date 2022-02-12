@@ -9,7 +9,7 @@
 class cache
 {
     using word_t = std::bitset<32>;
-
+    using tag_t = std::bitset<22>;
     using block_t = std::array<std::bitset<32>, 4>;
 
 
@@ -25,8 +25,7 @@ class cache
         }
     }
 
-    public:
-    std::optional<word_t> read_word(int block_number, const std::bitset<22>& tag, int word_offset) {
+    std::optional<word_t> read_word(int block_number, const tag_t& tag, int word_offset) {
         DEBUG_CACHE(std::cout << "DEBUG_CACHE\t" << "read_word "
                               << "block_number= " << block_number
                               << ", tag= " << tag
@@ -45,7 +44,7 @@ class cache
         return _dbit[block_number];
     }
 
-    void write_block(int block_number, const std::bitset<22>& tag, block_t data, bool dirty = 0) {
+    void write_block(int block_number, const tag_t& tag, block_t data, bool dirty = 0) {
         DEBUG_CACHE(std::cout << "DEBUG_CACHE\t" << "write_block "
                               << "block_number= " << block_number
                               << ", tag= " << tag
@@ -60,7 +59,7 @@ class cache
         _dbit[block_number] = dirty;
     }
 
-    void write_word(int block_number, int word_offset, const std::bitset<22>& tag, word_t data, bool dirty = 0) {
+    void write_word(int block_number, int word_offset, const tag_t& tag, word_t data, bool dirty = 0) {
         DEBUG_CACHE(std::cout << "DEBUG_CACHE\t" << "write_word "
                               << "block_number= " << block_number
                               << ", word_offset= " << word_offset
@@ -103,7 +102,7 @@ class cache
     std::array<block_t, 64> _data;
 
     //each tag or validity bit represents a block
-    std::array<std::bitset<22>, 64> _tags;
+    std::array<tag_t, 64> _tags;
     std::array<bool, 64> _vbit;
     std::array<bool, 64> _dbit;
 
