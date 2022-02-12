@@ -9,7 +9,7 @@
 
 #define DEBUG(code) if (1) { code; }
 
-int main()
+int main(int argc, char** argv)
 {
 
     int addr, op, block_addr, block_number, word_addr, word_offset;
@@ -29,7 +29,13 @@ int main()
 
     std::ifstream input_data; 
 
-    input_data.open("input.txt");
+    if (argc >= 2){
+        input_data.open(argv[1]);
+    } else {
+        std::cout << "Missing input file.\n";
+        return 1;
+    }
+
     std::string row;
 
     if (input_data.is_open()) {
@@ -98,22 +104,18 @@ int main()
             }
         }
 
-    }else {
-        std::cout << "Couldn't open file\n";  
+    } else {
+        std::cout << "Couldn't open file \"" << argv[1] << "\"\n";  
+        return 1;
     } 
 
     C.dump();
     D.dump();
 
-    std::cout << "size of data memory: " << sizeof(D) << " bytes"
-              << "\nsize of cache: " << sizeof(C) << " bytess"
-              << std::endl;
-    
     std::cout << "Miss Rate: " << miss_rate << std::endl;
     std::cout << "Hit Rate:  " << hit_rate << std::endl;
     return 0;
 }
-
 
 //block address = addr div 16
 //blcok number  = block addres mod 64
