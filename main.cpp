@@ -9,12 +9,15 @@
 
 #define DEBUG(code) if (1) { code; }
 
+const char* output_file_name = "results.txt";
+
 int main(int argc, char** argv)
 {
 
     int addr, op, block_addr, block_number, word_addr, word_offset;
-    int hit_rate = 0;
-    int miss_rate = 0;
+    int n_hits = 0;
+    int n_misses = 0;
+    int n_writes = 0;
     
     data_memory D;
     cache C;
@@ -28,6 +31,8 @@ int main(int argc, char** argv)
     std::array<word_t, 4> block_data;
 
     std::ifstream input_data; 
+
+    std::stringstream output;
 
     if (argc >= 2){
         input_data.open(argv[1]);
@@ -77,19 +82,24 @@ int main(int argc, char** argv)
             };
                                   
             if (op == 0){ // reading
+
                 if(C.read_word(block_number, tag, word_offset).has_value()){
+                    output << addr << " " << op << " H\n";
                     DEBUG(std::cout << "hit" << std::endl;)
-                    hit_rate++;
+                    n_hits++;
                 }else{
+                    output << addr << " " << op << " M\n";
                     DEBUG(std::cout << "miss" << std::endl;)
-                    miss_rate++;
+                    n_misses++;
                     block_data = D.read_block(word_addr);
 
                     update_memory();
                     C.write_block(block_number, tag, block_data);
                 }          
             }else{ // writing
+                ++n_writes;
                 ss >> (write_data);
+                output << addr << " " << op << " " << write_data << " W\n";
 
                 update_memory();
 
@@ -112,8 +122,24 @@ int main(int argc, char** argv)
     C.dump();
     D.dump();
 
-    std::cout << "Miss Rate: " << miss_rate << std::endl;
-    std::cout << "Hit Rate:  " << hit_rate << std::endl;
+    std::ofstream output_file; 
+    output_file.open(output_file_name);
+    if (!output_file.is_open()){
+        std::cout << "Couldn't write output to file \"" << output_file_name << "\"\n";  
+        return 1;
+    }
+
+    int n_reads = n_hits + n_misses;
+    output_file << "READS: " << n_reads << "\n";
+    output_file << "WRITES: " << n_writes << "\n";
+    output_file << "HITS: " << n_hits << "\n";
+    output_file << "MISSES: " << n_misses << "\n";
+    output_file << "HIT RATE: " << (double) n_hits/ (double) (n_reads) << "\n";
+    output_file << "MISS RATE: " << (double) n_misses/ (double) (n_reads) << "\n\n\n";
+
+    output_file << output.str();
+    output_file.close();
+
     return 0;
 }
 
