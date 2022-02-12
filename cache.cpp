@@ -1,5 +1,6 @@
 #include <array>
 #include <iostream>
+#include <optional>
 #include <cstdint>
 #include <bitset>
 
@@ -28,22 +29,15 @@ class cache
         }
 
     public:
-
-    word_t get_data(int block_number, int word_offset) {  // Method/function defined inside the class
-        return _data[block_number][word_offset];
+    std::optional<word_t> read(int block_number, const std::bitset<22>& tag, int word_offset) {
+      if((_vbit[block_number] == 1) && (_tags[block_number] == tag)){
+          return _data[block_number][word_offset];
+      }
+      return {};
     }
 
     int get_dbit(int block_number) {  // Method/function defined inside the class
         return _dbit[block_number].to_ulong();
-    }
-
-    public:
-      int read(int block_number, std::bitset<22> tag) {  // Method/function defined inside the class
-      if((_vbit[block_number] == 0) && (_tags[block_number] == tag)){
-          return 0;
-      }else{
-          return 1;
-      }
     }
 
     public:

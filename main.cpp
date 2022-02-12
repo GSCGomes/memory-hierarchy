@@ -57,8 +57,8 @@ int main()
             // Gets operation, if write evaluates next input term.
             ss >> (op);
                                   
-            if (op == 0){
-                if(C.read(block_number, tag)){
+            if (op == 0){ // reading
+                if(C.read(block_number, tag, word_offset).has_value()){
                     std::cout << "hit" << std::endl;
                     hit_rate++;
                 }else{
@@ -67,12 +67,14 @@ int main()
                     _block_data = D.read(word_addr); // #TODO alocating a word, but should be a block
                     C.write_from_memory(block_number, tag, _block_data);
                 }          
-            }else{
+            }else{ // writing
                 ss >> (write_data);
                 if(!C.get_dbit(block_number)){ //verifies dirty bits
                     C.write(block_number, word_offset, tag, write_data);
                 }else{
-                    D.write(word_addr, C.get_data(block_number, word_offset));// write back
+                    if (auto word = C.read(block_number, tag, word_offset); word.has_value()){
+                        D.write(word_addr, word.value());// write back
+                    }
                     C.write(block_number, word_offset, tag, write_data);
                 }
             }

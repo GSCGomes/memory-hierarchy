@@ -1,5 +1,5 @@
 CXX := g++
-CFLAGS := -Wall
+CFLAGS := -Wall -std=c++17
 EXE_NAME := mh
 
 all:
