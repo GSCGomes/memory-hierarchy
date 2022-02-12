@@ -13,7 +13,6 @@ const char* output_file_name = "results.txt";
 
 int main(int argc, char** argv)
 {
-    int addr, op, block_addr, block_number, word_addr, word_offset;
     int n_hits = 0;
     int n_misses = 0;
     int n_writes = 0;
@@ -49,6 +48,7 @@ int main(int argc, char** argv)
             std::string word;
 
             // Gets operation address and calculates block's address and number
+            int addr;
             ss >> (addr);
 
             if (addr >= 4096) {
@@ -61,6 +61,7 @@ int main(int argc, char** argv)
                           << addr - (addr % 4) << ".\n";
             }
 
+            int block_addr, block_number;
             block_addr = trunc(addr/16); //16 bytes per block
             block_number = block_addr % 64; //64 blocks per cache
 
@@ -71,11 +72,12 @@ int main(int argc, char** argv)
                 tag[i] = baddr[i+10];
             }
 
-
+            int word_addr, word_offset;
             word_addr = (word_t(addr >> 2).to_ulong());  // gets word addres
             word_offset = word_addr % 4; // gets wrod postion in a block
 
             // Gets operation, if write evaluates next input term.
+            int op;
             ss >> (op);
             if (op != 0 && op != 1) {
                 std::cout << "Invalid operation \"" << op << "\". Please enter \"0\" for reading and \"1\" for writing\n";
@@ -97,11 +99,11 @@ int main(int argc, char** argv)
                 if(C.read_word(block_number, tag, word_offset).has_value()){
                     output << addr << " " << op << " H\n";
                     DEBUG(std::cout << "hit" << std::endl;)
-                    n_hits++;
+                    ++n_hits;
                 }else{
                     output << addr << " " << op << " M\n";
                     DEBUG(std::cout << "miss" << std::endl;)
-                    n_misses++;
+                    ++n_misses;
                     block_data = D.read_block(word_addr);
 
                     update_memory();
