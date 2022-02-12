@@ -4,7 +4,7 @@
 #include "data_memory.cpp"
 #include "cache.cpp"
 #include <bits/stdc++.h>
-#include <bitset> 
+#include <bitset>
 #include <sstream>
 
 #define DEBUG(code) if (1) { code; }
@@ -17,7 +17,7 @@ int main(int argc, char** argv)
     int n_hits = 0;
     int n_misses = 0;
     int n_writes = 0;
-    
+
     data_memory D;
     cache C;
 
@@ -27,7 +27,7 @@ int main(int argc, char** argv)
     word_t tag_data;
     std::array<word_t, 4> block_data;
 
-    std::ifstream input_data; 
+    std::ifstream input_data;
 
     std::stringstream output;
 
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
 
             std::stringstream ss(row);
             std::string word;
-            
+
             // Gets operation address and calculates block's address and number
             ss >> (addr);
 
@@ -66,12 +66,12 @@ int main(int argc, char** argv)
 
             word_t baddr(addr);
             tag_t tag;
-            
+
             for (int i = 21; i >= 0; i--){ // change this for suggested hack by fish
                 tag[i] = baddr[i+10];
-            }   
+            }
 
-            
+
             word_addr = (word_t(addr >> 2).to_ulong());  // gets word addres
             word_offset = word_addr % 4; // gets wrod postion in a block
 
@@ -91,7 +91,7 @@ int main(int argc, char** argv)
                     }
                 }
             };
-                                  
+
             if (op == 0){ // reading
 
                 if(C.read_word(block_number, tag, word_offset).has_value()){
@@ -106,7 +106,7 @@ int main(int argc, char** argv)
 
                     update_memory();
                     C.write_block(block_number, tag, block_data);
-                }          
+                }
             }else{ // writing
                 ++n_writes;
                 ss >> (write_data);
@@ -119,24 +119,24 @@ int main(int argc, char** argv)
                 if(!C.read_word(block_number, tag, word_offset).has_value()){
                     block_data = D.read_block(word_addr); // #TODO alocating a word, but should be a block
                     C.write_block(block_number, tag, block_data);
-                }          
+                }
 
                 C.write_word(block_number, word_offset, tag, write_data, true /* dirty */);
             }
         }
 
     } else {
-        std::cerr << "Couldn't open file \"" << argv[1] << "\"\n";  
+        std::cerr << "Couldn't open file \"" << argv[1] << "\"\n";
         return 1;
-    } 
+    }
 
     C.dump();
     D.dump();
 
-    std::ofstream output_file; 
+    std::ofstream output_file;
     output_file.open(output_file_name);
     if (!output_file.is_open()){
-        std::cerr << "Couldn't write output to file \"" << output_file_name << "\"\n";  
+        std::cerr << "Couldn't write output to file \"" << output_file_name << "\"\n";
         return 1;
     }
 
