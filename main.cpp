@@ -65,12 +65,8 @@ int main(int argc, char** argv)
             block_addr = trunc(addr/16); //16 bytes per block
             block_number = block_addr % 64; //64 blocks per cache
 
-            word_t baddr(addr);
-            tag_t tag;
-
-            for (int i = 21; i >= 0; i--){ // change this for suggested hack by fish
-                tag[i] = baddr[i+10];
-            }
+            // tag is the 22 MSBs from the address
+            tag_t tag = (word_t(addr) >> (32-22)).to_ulong();
 
             int word_addr, word_offset;
             word_addr = (word_t(addr >> 2).to_ulong());  // gets word addres
