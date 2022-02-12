@@ -46,7 +46,7 @@ class cache
     }
 
     bool is_dirty(int block_number) {  // Method/function defined inside the class
-        DEBUG_CACHE(std::cout << "DEBUG_CACHE is_dirty " << _dbit[block_number].to_ulong() << std::endl)
+        DEBUG_CACHE(std::cout << "DEBUG_CACHE is_dirty " << _dbit[block_number] << std::endl)
         return _dbit[block_number];
     }
 
