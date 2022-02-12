@@ -15,8 +15,8 @@ class cache
 
     //each tag or validity bit represents a block
     std::array<std::bitset<22>, 64> _tags;
-    std::array<std::bitset<1>, 64> _vbit;
-    std::array<std::bitset<1>, 64> _dbit;
+    std::array<bool, 64> _vbit;
+    std::array<bool, 64> _dbit;
 
     public:
     void init(){
@@ -37,7 +37,7 @@ class cache
                               << ", tag= " << tag
                               << ", word_offset= " << word_offset)
 
-        if((_vbit[block_number] == 1) && (_tags[block_number] == tag)){
+        if(_vbit[block_number] && (_tags[block_number] == tag)){
             DEBUG_CACHE(std::cout << ", hit :D word= " << _data[block_number][word_offset] << std::endl)
             return _data[block_number][word_offset];
         }
@@ -47,7 +47,7 @@ class cache
 
     bool is_dirty(int block_number) {  // Method/function defined inside the class
         DEBUG_CACHE(std::cout << "DEBUG_CACHE is_dirty " << _dbit[block_number].to_ulong() << std::endl)
-        return _dbit[block_number].to_ulong();
+        return _dbit[block_number];
     }
 
     void write_block(int block_number, const std::bitset<22>& tag, block_t data, bool dirty = 0) {
@@ -60,7 +60,7 @@ class cache
         DEBUG_CACHE(std::cout << std::endl)
 
         _tags[block_number] = tag;
-        _vbit[block_number] = 1;
+        _vbit[block_number] = true;
         _data[block_number] = data;
         _dbit[block_number] = dirty;
     }
@@ -73,7 +73,7 @@ class cache
                               << ", data= " << data
                               << ", dirty= " << dirty << std::endl)
         _tags[block_number] = tag;
-        _vbit[block_number] = 1;
+        _vbit[block_number] = true;
         _data[block_number][word_offset] = data;
         _dbit[block_number] = dirty;
     }
