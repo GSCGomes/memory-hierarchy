@@ -7,6 +7,8 @@
 #include <bitset> 
 #include <sstream>
 
+#define DEBUG(code) if (1) { code; }
+
 int main()
 {
 
@@ -23,7 +25,7 @@ int main()
     using word_t = std::bitset<32>;
     word_t write_data;
     word_t tag_data;
-    std::array<word_t, 4> _block_data;
+    std::array<word_t, 4> block_data;
 
     std::ifstream input_data; 
 
@@ -32,6 +34,8 @@ int main()
 
     if (input_data.is_open()) {
         while (getline (input_data, row)) {
+
+            DEBUG(std::cout << "\n\n********* row = " << row << std::endl << std::endl)
 
             std::stringstream ss(row);
             std::string word;
@@ -53,30 +57,44 @@ int main()
             word_addr = (std::bitset<32>(addr >> 2).to_ulong());  // gets word addres
             word_offset = word_addr % 4; // gets wrod postion in a block
 
-            
             // Gets operation, if write evaluates next input term.
             ss >> (op);
+
+            auto update_memory = [&](){
+                // check if the cache block is dirty and update memory with the pending value
+                if(C.is_dirty(block_number)){
+                    auto word = C.read_word(block_number, tag, word_offset);
+                    if (word.has_value()){
+                        D.write_word(word_addr, word.value());// write back
+                    }
+                }
+            };
                                   
             if (op == 0){ // reading
-                if(C.read(block_number, tag, word_offset).has_value()){
-                    std::cout << "hit" << std::endl;
+                if(C.read_word(block_number, tag, word_offset).has_value()){
+                    DEBUG(std::cout << "hit" << std::endl;)
                     hit_rate++;
                 }else{
-                    std::cout << "miss" << std::endl;
+                    DEBUG(std::cout << "miss" << std::endl;)
                     miss_rate++;
-                    _block_data = D.read(word_addr); // #TODO alocating a word, but should be a block
-                    C.write_from_memory(block_number, tag, _block_data);
+                    block_data = D.read_block(word_addr);
+
+                    update_memory();
+                    C.write_block(block_number, tag, block_data);
                 }          
             }else{ // writing
                 ss >> (write_data);
-                if(!C.get_dbit(block_number)){ //verifies dirty bits
-                    C.write(block_number, word_offset, tag, write_data);
-                }else{
-                    if (auto word = C.read(block_number, tag, word_offset); word.has_value()){
-                        D.write(word_addr, word.value());// write back
-                    }
-                    C.write(block_number, word_offset, tag, write_data);
-                }
+
+                update_memory();
+
+                // we can't write directly to only one word of the cache
+                // first we make sure that the rest of the block is filled correctly
+                if(!C.read_word(block_number, tag, word_offset).has_value()){
+                    block_data = D.read_block(word_addr); // #TODO alocating a word, but should be a block
+                    C.write_block(block_number, tag, block_data);
+                }          
+
+                C.write_word(block_number, word_offset, tag, write_data, true /* dirty */);
             }
         }
 

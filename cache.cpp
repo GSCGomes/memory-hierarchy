@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <bitset>
 
+#define DEBUG_CACHE(code) if (1) { code; }
+
 class cache
 {
     using word_t = std::bitset<32>;
@@ -29,30 +31,51 @@ class cache
         }
 
     public:
-    std::optional<word_t> read(int block_number, const std::bitset<22>& tag, int word_offset) {
-      if((_vbit[block_number] == 1) && (_tags[block_number] == tag)){
-          return _data[block_number][word_offset];
-      }
-      return {};
+    std::optional<word_t> read_word(int block_number, const std::bitset<22>& tag, int word_offset) {
+        DEBUG_CACHE(std::cout << "DEBUG_CACHE\t" << "read_word "
+                              << "block_number= " << block_number
+                              << ", tag= " << tag
+                              << ", word_offset= " << word_offset)
+
+        if((_vbit[block_number] == 1) && (_tags[block_number] == tag)){
+            DEBUG_CACHE(std::cout << ", hit :D word= " << _data[block_number][word_offset] << std::endl)
+            return _data[block_number][word_offset];
+        }
+        DEBUG_CACHE(std::cout << ", miss :(" << std::endl);
+        return {};
     }
 
-    int get_dbit(int block_number) {  // Method/function defined inside the class
+    bool is_dirty(int block_number) {  // Method/function defined inside the class
+        DEBUG_CACHE(std::cout << "DEBUG_CACHE is_dirty " << _dbit[block_number].to_ulong() << std::endl)
         return _dbit[block_number].to_ulong();
     }
 
-    public:
-    void write_from_memory(int block_number, std::bitset<22> tag, std::array<std::bitset<32>, 4> _block_data) {  // Method/function defined inside the class
+    void write_block(int block_number, const std::bitset<22>& tag, block_t data, bool dirty = 0) {
+        DEBUG_CACHE(std::cout << "DEBUG_CACHE\t" << "write_block "
+                              << "block_number= " << block_number
+                              << ", tag= " << tag
+                              << ", dirty= " << dirty
+                              << ", data= ")
+        DEBUG_CACHE(for (int i = 0; i < 4; ++i) std::cout << data[i] << " ")
+        DEBUG_CACHE(std::cout << std::endl)
+
         _tags[block_number] = tag;
         _vbit[block_number] = 1;
-        _data[block_number] = _block_data;
+        _data[block_number] = data;
+        _dbit[block_number] = dirty;
     }
 
-    public:
-    void write(int block_number, int word_offset, std::bitset<22> tag, std::bitset<32> write_data) {  // Method/function defined inside the class
+    void write_word(int block_number, int word_offset, const std::bitset<22>& tag, word_t data, bool dirty = 0) {
+        DEBUG_CACHE(std::cout << "DEBUG_CACHE\t" << "write_word "
+                              << "block_number= " << block_number
+                              << ", word_offset= " << word_offset
+                              << ", tag= " << tag
+                              << ", data= " << data
+                              << ", dirty= " << dirty << std::endl)
         _tags[block_number] = tag;
         _vbit[block_number] = 1;
-        _dbit[block_number] = 1;
-        _data[block_number][word_offset] = write_data;
+        _data[block_number][word_offset] = data;
+        _dbit[block_number] = dirty;
     }
 
     void dump() {
