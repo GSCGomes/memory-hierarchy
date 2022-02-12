@@ -47,7 +47,7 @@ int main(int argc, char** argv)
             std::stringstream ss(row);
             std::string word;
 
-            // Gets operation address and calculates block's address and number
+            // gets operation address and calculates block's address and number
             int addr;
             ss >> (addr);
 
@@ -69,10 +69,10 @@ int main(int argc, char** argv)
             tag_t tag = (word_t(addr) >> (32-22)).to_ulong();
 
             int word_addr, word_offset;
-            word_addr = (word_t(addr >> 2).to_ulong());  // gets word addres
-            word_offset = word_addr % 4; // gets wrod postion in a block
+            word_addr = (word_t(addr >> 2).to_ulong());  // gets word address
+            word_offset = word_addr % 4; // gets word position in a block
 
-            // Gets operation, if write evaluates next input term.
+            // gets operation, if write evaluates next input term.
             int op;
             ss >> (op);
             if (op != 0 && op != 1) {
@@ -153,5 +153,5 @@ int main(int argc, char** argv)
 }
 
 //block address = addr div 16
-//blcok number  = block addres mod 64
-// Word position = byte offset div 4/ Word position = byte offset div 4
+//block number  = block address mod 64
+//word position = byte offset div 4/ Word position = byte offset div 4

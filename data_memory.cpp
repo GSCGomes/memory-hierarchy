@@ -17,7 +17,7 @@ class data_memory
         }
     }
 
-    block_t read_block(int word_addr) {  // Method/function defined inside the class
+    block_t read_block(int word_addr) {
 
         block_t block;
         int block_start = word_addr - word_addr % 4;
@@ -37,7 +37,7 @@ class data_memory
         return block;
     }
 
-    void write_word(int addr, const word_t& write_data) {  // Method/function defined inside the class
+    void write_word(int addr, const word_t& write_data) {
         _data[addr] = write_data;
 
         DEBUG_MEM(std::cout << "DEBUG_MEM\t" << "write_word "
@@ -57,7 +57,6 @@ class data_memory
 
         printSeparator("data memory start");
 
-        // std::cout << "\tV\tD\tT\t\t\t\tBLOCK\n";
         for (int i = 0; i < 1024; ++i){
             std::cout << i << ":\t"
                       << _data[i];
