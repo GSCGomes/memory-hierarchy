@@ -13,7 +13,6 @@ const char* output_file_name = "results.txt";
 
 int main(int argc, char** argv)
 {
-
     int addr, op, block_addr, block_number, word_addr, word_offset;
     int n_hits = 0;
     int n_misses = 0;
@@ -37,7 +36,7 @@ int main(int argc, char** argv)
     if (argc >= 2){
         input_data.open(argv[1]);
     } else {
-        std::cout << "Missing input file.\n";
+        std::cerr << "Missing input file.\n";
         return 1;
     }
 
@@ -53,6 +52,16 @@ int main(int argc, char** argv)
             
             // Gets operation address and calculates block's address and number
             ss >> (addr);
+
+            if (addr >= 4096) {
+                std::cerr << "Address " << addr << " is too large. Please use values between 0 and 4095\n";
+                return 1;
+            }
+
+            if (addr % 4) {
+                std::cout << "Address " << addr << " is not divisible by 4. Considering address "
+                          << addr - (addr % 4) << ".\n";
+            }
             block_addr = trunc(addr/16); //16 bytes per block
             block_number = block_addr % 64; //64 blocks per cache
            
@@ -70,6 +79,10 @@ int main(int argc, char** argv)
 
             // Gets operation, if write evaluates next input term.
             ss >> (op);
+            if (op != 0 && op != 1) {
+                std::cout << "Invalid operation \"" << op << "\". Please enter \"0\" for reading and \"1\" for writing\n";
+                return 1;
+            }
 
             auto update_memory = [&](){
                 // check if the cache block is dirty and update memory with the pending value
@@ -115,7 +128,7 @@ int main(int argc, char** argv)
         }
 
     } else {
-        std::cout << "Couldn't open file \"" << argv[1] << "\"\n";  
+        std::cerr << "Couldn't open file \"" << argv[1] << "\"\n";  
         return 1;
     } 
 
@@ -125,7 +138,7 @@ int main(int argc, char** argv)
     std::ofstream output_file; 
     output_file.open(output_file_name);
     if (!output_file.is_open()){
-        std::cout << "Couldn't write output to file \"" << output_file_name << "\"\n";  
+        std::cerr << "Couldn't write output to file \"" << output_file_name << "\"\n";  
         return 1;
     }
 
