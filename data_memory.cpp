@@ -1,4 +1,5 @@
 #include <array>
+#include <iostream>
 #include <cstdint>
 #include <bitset>
 
@@ -32,6 +33,30 @@ class data_memory
     public:
     void write(int addr, std::bitset<32> write_data) {  // Method/function defined inside the class
         _data[addr] = write_data;
+    }
+
+    void dump() {
+        auto printSeparator = [](const char* str) {
+            const int n = 20;
+            for (int i = 0; i < n; ++i) std::cout << "-";
+            std::cout << str;
+            for (int i = 0; i < n; ++i) std::cout << "-";
+            std::cout << "\n\n";
+        };
+
+        printSeparator("data memory start");
+
+        // std::cout << "\tV\tD\tT\t\t\t\tBLOCK\n";
+        for (int i = 0; i < 1024; ++i){
+            std::cout << i << ":\t"
+                      << _data[i];
+            if (_data[i].to_ulong()) {
+                std::cout << "\t<------";
+            }
+            std::cout << "\n";
+        }
+
+        printSeparator("data memory end");
     }
 
 };

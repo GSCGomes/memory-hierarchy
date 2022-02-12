@@ -82,6 +82,9 @@ int main()
         std::cout << "Couldn't open file\n";  
     } 
 
+    C.dump();
+    D.dump();
+
     std::cout << "size of data memory: " << sizeof(D) << " bytes"
               << "\nsize of cache: " << sizeof(C) << " bytess"
               << std::endl;

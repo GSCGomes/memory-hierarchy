@@ -1,4 +1,5 @@
 #include <array>
+#include <iostream>
 #include <cstdint>
 #include <bitset>
 
@@ -58,6 +59,32 @@ class cache
         _vbit[block_number] = 1;
         _dbit[block_number] = 1;
         _data[block_number][word_offset] = write_data;
+    }
+
+    void dump() {
+        auto printSeparator = [](const char* str) {
+            const int n = 90;
+            for (int i = 0; i < n; ++i) std::cout << "-";
+            std::cout << str;
+            for (int i = 0; i < n; ++i) std::cout << "-";
+            std::cout << "\n\n";
+        };
+
+        printSeparator("cache start");
+
+        std::cout << "\tV\tD\tT\t\t\t\tBLOCK\n";
+        for (int i = 0; i < 64; ++i){
+            std::cout << i << ":\t";
+            std::cout << _vbit[i] << "\t"
+                      << _dbit[i] << "\t"
+                      << _tags[i] << "\t\t";
+            for (int j = 0; j < 4; ++j)
+                std::cout << _data[i][j] << " ";
+            std::cout << std::endl;
+
+        }
+
+        printSeparator("cache end");
     }
 
 
