@@ -1,14 +1,65 @@
 #include <array>
 #include <cstdint>
-#include <bitset> 
+#include <bitset>
 
 class cache
 {
-    using block_t = std::array<uint32_t, 4>;
+    using word_t = std::bitset<32>;
+
+    using block_t = std::array<std::bitset<32>, 4>;
     std::array<block_t, 64> _data;
 
-    //#TODO adjust following statements to have tag array and validation bit for each block;
-    std::array<std::bitset<22>, 64> _tags; 
+    //each tag or validity bit represents a block
+    std::array<std::bitset<22>, 64> _tags;
     std::array<std::bitset<1>, 64> _vbit;
+    std::array<std::bitset<1>, 64> _dbit;
+
+    public:
+    void init(){
+         for (int i = 0; i < 64; i++){
+                for (int j = 0; j < 4; j++){
+                    _data[i][j] = 0x0;
+                }
+                _tags[i] = 0x0;
+                _vbit[i] = 0x0;
+                _dbit[i] = 0x0;
+            }
+        }
+
+    public:
+
+    word_t get_data(int block_number, int word_offset) {  // Method/function defined inside the class
+        return _data[block_number][word_offset];
+    }
+
+    int get_dbit(int block_number) {  // Method/function defined inside the class
+        return _dbit[block_number].to_ulong();
+    }
+
+    public:
+      int read(int block_number, std::bitset<22> tag) {  // Method/function defined inside the class
+      if((_vbit[block_number] == 0) && (_tags[block_number] == tag)){
+          return 0;
+      }else{
+          return 1;
+      }
+    }
+
+    public:
+    void write_from_memory(int block_number, std::bitset<22> tag, std::array<std::bitset<32>, 4> _block_data) {  // Method/function defined inside the class
+        _tags[block_number] = tag;
+        _vbit[block_number] = 1;
+        _data[block_number] = _block_data;
+    }
+
+    public:
+    void write(int block_number, int word_offset, std::bitset<22> tag, std::bitset<32> write_data) {  // Method/function defined inside the class
+        _tags[block_number] = tag;
+        _vbit[block_number] = 1;
+        _dbit[block_number] = 1;
+        _data[block_number][word_offset] = write_data;
+    }
+
 
 };
+
