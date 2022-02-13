@@ -12,6 +12,7 @@ const char* output_file_name = "results.txt";
 
 int main(int argc, char** argv)
 {
+    std::cout << "TP3 - OC1 - Felipe Aragão, Guilherme Gomes\n";
     int n_hits = 0;
     int n_misses = 0;
     int n_writes = 0;
@@ -140,6 +141,8 @@ int main(int argc, char** argv)
 
     output_file << output.str();
     output_file.close();
+
+    std::cout << "Execution finished, output report file saved to \"" << output_file_name << "\".\n";
 
     return 0;
 }
