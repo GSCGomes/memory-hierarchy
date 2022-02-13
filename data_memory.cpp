@@ -1,7 +1,6 @@
 #include <array>
-#include <iostream>
-#include <cstdint>
 #include <bitset>
+#include <iostream>
 
 #define DEBUG_MEM(code) if (1) { code; }
 

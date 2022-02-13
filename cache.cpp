@@ -1,8 +1,7 @@
 #include <array>
+#include <bitset>
 #include <iostream>
 #include <optional>
-#include <cstdint>
-#include <bitset>
 
 #define DEBUG_CACHE(code) if (1) { code; }
 

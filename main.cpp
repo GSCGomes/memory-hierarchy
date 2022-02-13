@@ -1,11 +1,12 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include "data_memory.cpp"
 #include "cache.cpp"
-#include <bits/stdc++.h>
+#include "data_memory.cpp"
+
 #include <bitset>
+#include <cmath>
+#include <fstream>
+#include <iostream>
 #include <sstream>
+#include <string>
 
 #define DEBUG(code) if (1) { code; }
 
