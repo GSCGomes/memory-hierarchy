@@ -1,0 +1,11 @@
+Alunos:
+Felipe Aragão Nogueira de Freitas - 2017002288
+Guilherme Serra Camargo Gomes - 2017074467
+
+Observações Importantes:
+
+Dadas as ambiguidades do enunciado, foram tomadas algumas decisões de projeto que podem impactar a saída final do programa:
+
+1 - Caso o endereço do byte não seja o endereço de uma palavra, como por exemplo, endereço 5, é retornado um aviso e considera-se o endereço para palavra que contém o byte 5. Neste caso, o endereço correto da palavra 1 seria 4, e não 5. O programa ao receber 5 informa: 5 is not a valid word address. Considering address 4. E opera com o endereço correto. 
+
+2 - Como não foi especificado no enunciado se acessos para escritas deveríam ter taxa de miss e hit contabilizada, esses valores foram desconsiderados. Sendo levado em conta apenas os hits e misses de leitura. 
