@@ -1,8 +1,5 @@
 #include <array>
 #include <bitset>
-#include <iostream>
-
-#define DEBUG_MEM(code) if (1) { code; }
 
 class data_memory
 {
@@ -25,47 +22,11 @@ class data_memory
             block[j] = _data[i];
         }
 
-        DEBUG_MEM(std::cout << "DEBUG_MEM\t" << "read_block "
-                            << "word_addr= " << word_addr
-                            << ", block_start= " << block_start
-                            << ", block= ")
-        DEBUG_MEM(for (int i = 0; i < 4; ++i) std::cout << block[i] << " ")
-        DEBUG_MEM(std::cout << std::endl)
-
-
         return block;
     }
 
     void write_word(int addr, const word_t& write_data) {
         _data[addr] = write_data;
-
-        DEBUG_MEM(std::cout << "DEBUG_MEM\t" << "write_word "
-                            << "addr= " << addr
-                            << ", write_data= " << write_data
-                            << std::endl;)
-    }
-
-    void dump() {
-        auto printSeparator = [](const char* str) {
-            const int n = 20;
-            for (int i = 0; i < n; ++i) std::cout << "-";
-            std::cout << str;
-            for (int i = 0; i < n; ++i) std::cout << "-";
-            std::cout << "\n\n";
-        };
-
-        printSeparator("data memory start");
-
-        for (int i = 0; i < 1024; ++i){
-            std::cout << i << ":\t"
-                      << _data[i];
-            if (_data[i].to_ulong()) {
-                std::cout << "\t<------";
-            }
-            std::cout << "\n";
-        }
-
-        printSeparator("data memory end");
     }
 
   private:

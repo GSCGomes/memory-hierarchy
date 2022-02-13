@@ -8,8 +8,6 @@
 #include <sstream>
 #include <string>
 
-#define DEBUG(code) if (1) { code; }
-
 const char* output_file_name = "results.txt";
 
 int main(int argc, char** argv)
@@ -43,8 +41,6 @@ int main(int argc, char** argv)
     if (input_data.is_open()) {
         while (getline (input_data, row)) {
 
-            DEBUG(std::cout << "\n\n********* row = " << row << std::endl << std::endl)
-
             std::stringstream ss(row);
             std::string word;
 
@@ -58,7 +54,7 @@ int main(int argc, char** argv)
             }
 
             if (addr % 4) {
-                std::cout << "Address " << addr << " is not divisible by 4. Considering address "
+                std::cout << addr << " is not a valid word address. Considering address "
                           << addr - (addr % 4) << ".\n";
             }
 
@@ -95,11 +91,9 @@ int main(int argc, char** argv)
 
                 if(C.read_word(block_number, tag, word_offset).has_value()){
                     output << addr << " " << op << " H\n";
-                    DEBUG(std::cout << "hit" << std::endl;)
                     ++n_hits;
                 }else{
                     output << addr << " " << op << " M\n";
-                    DEBUG(std::cout << "miss" << std::endl;)
                     ++n_misses;
                     block_data = D.read_block(word_addr);
 
@@ -128,9 +122,6 @@ int main(int argc, char** argv)
         std::cerr << "Couldn't open file \"" << argv[1] << "\"\n";
         return 1;
     }
-
-    C.dump();
-    D.dump();
 
     std::ofstream output_file;
     output_file.open(output_file_name);
